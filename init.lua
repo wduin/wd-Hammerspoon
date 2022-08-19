@@ -1,6 +1,6 @@
 
 require "modules/windows"
-require "modules/controlWindowSize"
+require "modules/resize"
 require "modules/volume"
 require "modules/test"
 -- require "modules/wifi"

@@ -66,23 +66,10 @@ end)
 
 ----------------------------------------------------------------
 -- 全屏,不会单独占据一个窗口
--- 再次按时会返回到上次设置的窗口大小
 hotkey.bind(hyper, 'F', function()
-    toggle_maximize()
+    window.focusedWindow():moveToUnit '[0,0,100,100]'
 end)
--- defines for window maximize toggler
-local frameCache = {}
--- toggle a window between its normal size, and being maximized
-function toggle_maximize()
-    local win = window.focusedWindow()
-    if frameCache[win:id()] then
-        win:setFrame(frameCache[win:id()])
-        frameCache[win:id()] = nil
-    else
-        frameCache[win:id()] = win:frame()
-        win:maximize()
-    end
-end
+
 -- 全屏,会单独占据一个窗口
 hotkey.bind(hyperShift, 'F', function()
     window.focusedWindow():toggleFullScreen()
