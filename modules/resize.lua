@@ -1,20 +1,6 @@
 -- window管理
 -- 这个文件中的代码都是用来控制应用窗口的大小,如二分之一,四分之一等
-local hotkey = require "hs.hotkey"
-local window = require "hs.window"
-local layout = require "hs.layout"
--- local grid = require "hs.grid"
--- local hints = require "hs.hints"
-local screen = require "hs.screen"
-local alert = require "hs.alert"
--- local fnutils = require "hs.fnutils"
--- local geometry = require "hs.geometry"
--- local mouse = require "hs.mouse"
 
-hyper = { "cmd", "ctrl", "alt" } -- equals ⌘ + ⌥ + ⌃
-hyperShift = { "cmd", "ctrl", "alt", "shift" } -- equals ⌘ + ⌥ + ⌃ + ⇧
-
--- default 0.2
 window.animationDuration = 0
 
 -- 通过 window.focusedWindow():moveToUnit'[0,0,100,50]' 来控制窗口的大小

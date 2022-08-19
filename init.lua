@@ -1,4 +1,4 @@
-
+require "modules/globalData"
 require "modules/windows"
 require "modules/resize"
 require "modules/volume"

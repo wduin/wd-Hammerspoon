@@ -1,6 +1,4 @@
 -- 使用 ⌘ + ⌥ + ⌃ + [] 调整音量
-hyper = { "cmd", "ctrl", "alt" } -- equals ⌘ + ⌥ + ⌃
-
 function changeVolume(diff)
     return function()
         local current = hs.audiodevice.defaultOutputDevice():volume()
