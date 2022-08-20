@@ -1,9 +1,9 @@
 --这个文件中存储一些常用的数据,如快捷键,常用缩写
+
+--这里是快捷键
 hyper = { "cmd", "ctrl", "alt" } -- equals ⌘ + ⌥ + ⌃
 hyperShift = { "cmd", "ctrl", "alt", "shift" } -- equals ⌘ + ⌥ + ⌃ + ⇧
 
-
-----------------------------------------------------------------
 --下面是一些别名
 hotkey = require "hs.hotkey"
 window = require "hs.window"
