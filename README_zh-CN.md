@@ -48,3 +48,5 @@
 ### 参考文档
 - https://github.com/wangshub/hammerspoon-config
 - https://github.com/S1ngS1ng/HammerSpoon
+- https://github.com/agzam/spacehammer
+- https://github.com/Hammerspoon/hammerspoon

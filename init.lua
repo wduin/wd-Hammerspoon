@@ -3,7 +3,7 @@ require "modules/windows"
 require "modules/resize"
 require "modules/volume"
 require "modules/reload"
-require "modules/test"
+require "modules/bluetooth"
 
 --二分之一
 hotkey.bind(hyper, "A", leftHalf)
