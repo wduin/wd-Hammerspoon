@@ -1,157 +1,237 @@
--- window管理
--- 这个文件中的代码都是用来控制应用窗口的大小,如二分之一,四分之一等
+-- 这里是别人写的可以调整大小的代码
+-- 可以对代码进行细微的调整,但是感觉目前用不到,所以先备份
+-- 别人的参考文档:https://github.com/S1ngS1ng/HammerSpoon/blob/master/README-cn.md
+-- -----------------------------------------------------------------------
+--                         ** Something Global **                       --
+-- -----------------------------------------------------------------------
+-- Comment out this following line if you wish to see animations
+local windowMeta = {}
+window = require "hs.window"
+hs.window.animationDuration = 0
+grid = require "hs.grid"
+grid.setMargins('0, 0')
 
-window.animationDuration = 0
--- 通过 window.focusedWindow():moveToUnit'[0,0,100,50]' 来控制窗口的大小
--- [0,0,100,50] 表示的是左上角和右下角顶点的位置,从0到100,按照百分比来进行控制
+module = {}
 
--------------------------一半---------------------------------------
-function leftHalf()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit(layout.left50)
+-- Set screen watcher, in case you connect a new monitor, or unplug a monitor
+screens = {}
+screenArr = {}
+local screenwatcher = hs.screen.watcher.new(function()
+    screens = hs.screen.allScreens()
+end)
+screenwatcher:start()
+
+-- Construct list of screens
+indexDiff = 0
+for index=1,#hs.screen.allScreens() do
+    local xIndex,yIndex = hs.screen.allScreens()[index]:position()
+    screenArr[xIndex] = hs.screen.allScreens()[index]
+end
+
+-- Find lowest screen index, save to indexDiff if negative
+hs.fnutils.each(screenArr, function(e)
+    local currentIndex = hs.fnutils.indexOf(screenArr, e)
+    if currentIndex < 0 and currentIndex < indexDiff then
+        indexDiff = currentIndex
+    end
+end)
+
+-- Set screen grid depending on resolution
+-- TODO: set grid according to pixels
+for _index,screen in pairs(hs.screen.allScreens()) do
+    if screen:frame().w / screen:frame().h > 2 then
+        -- 10 * 4 for ultra wide screen
+        grid.setGrid('10 * 4', screen)
     else
-        alert.show("No active window")
+        if screen:frame().w < screen:frame().h then
+            -- 4 * 8 for vertically aligned screen
+            grid.setGrid('4 * 8', screen)
+        else
+            -- 8 * 4 for normal screen
+            grid.setGrid('8 * 4', screen)
+        end
     end
 end
 
-function rightHalf()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit(layout.right50)
+-- Some constructors, just for programming
+function Cell(x, y, w, h)
+    return hs.geometry(x, y, w, h)
+end
+
+-- Bind new method to windowMeta
+function windowMeta.new()
+    local self = setmetatable(windowMeta, {
+        -- Treate table like a function
+        -- Event listener when windowMeta() is called
+        __call = function (cls, ...)
+            return cls.new(...)
+        end,
+    })
+
+    self.window = window.focusedWindow()
+    self.screen = window.focusedWindow():screen()
+    self.windowGrid = grid.get(self.window)
+    self.screenGrid = grid.getGrid(self.screen)
+
+    return self
+end
+
+-- -----------------------------------------------------------------------
+--                   ** ALERT: GEEKS ONLY, GLHF  :C **                  --
+--            ** Keybinding configurations locate at bottom **          --
+-- -----------------------------------------------------------------------
+
+module.maximizeWindow = function ()
+    local this = windowMeta.new()
+    hs.grid.maximizeWindow(this.window)
+end
+
+module.centerOnScreen = function ()
+    local this = windowMeta.new()
+    this.window:centerOnScreen(this.screen)
+end
+
+module.throwLeft = function ()
+    local this = windowMeta.new()
+    this.window:moveOneScreenWest()
+end
+
+module.throwRight = function ()
+    local this = windowMeta.new()
+    this.window:moveOneScreenEast()
+end
+
+module.leftHalf = function ()
+    local this = windowMeta.new()
+    local cell = Cell(0, 0, 0.5 * this.screenGrid.w, this.screenGrid.h)
+    grid.set(this.window, cell, this.screen)
+    this.window.setShadows(true)
+end
+
+module.rightHalf = function ()
+    local this = windowMeta.new()
+    local cell = Cell(0.5 * this.screenGrid.w, 0, 0.5 * this.screenGrid.w, this.screenGrid.h)
+    grid.set(this.window, cell, this.screen)
+end
+
+-- Windows-like cycle left
+module.cycleLeft = function ()
+    local this = windowMeta.new()
+    -- Check if this window is on left or right
+    if this.windowGrid.x == 0 then
+        local currentIndex = hs.fnutils.indexOf(screenArr, this.screen)
+        local previousScreen = screenArr[(currentIndex - indexDiff - 1) % #hs.screen.allScreens() + indexDiff]
+        this.window:moveToScreen(previousScreen)
+        module.rightHalf()
     else
-        alert.show("No active window")
+        module.leftHalf()
     end
 end
 
-function topHalf()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[0,0,100,50]'
+-- Windows-like cycle right
+module.cycleRight = function ()
+    local this = windowMeta.new()
+    -- Check if this window is on left or right
+    if this.windowGrid.x == 0 then
+        module.rightHalf()
     else
-        alert.show("No active window")
+        local currentIndex = hs.fnutils.indexOf(screenArr, this.screen)
+        local nextScreen = screenArr[(currentIndex - indexDiff + 1) % #hs.screen.allScreens() + indexDiff]
+        this.window:moveToScreen(nextScreen)
+        module.leftHalf()
     end
 end
 
-function bottomHalf()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[0,50,100,100]'
+module.topHalf = function ()
+    local this = windowMeta.new()
+    local cell = Cell(0, 0, this.screenGrid.w, 0.5 * this.screenGrid.h)
+    grid.set(this.window, cell, this.screen)
+end
+
+module.bottomHalf = function ()
+    local this = windowMeta.new()
+    local cell = Cell(0, 0.5 * this.screenGrid.h, this.screenGrid.w, 0.5 * this.screenGrid.h)
+    grid.set(this.window, cell, this.screen)
+end
+
+module.rightToLeft = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y, this.windowGrid.w - 1, this.windowGrid.h)
+    if this.windowGrid.w > 1 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Small Enough :)")
     end
 end
 
-
--------------------------四分之一---------------------------------------
-
-function leftQuarter()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[0,0,50,50]'
+module.rightToRight = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y, this.windowGrid.w + 1, this.windowGrid.h)
+    if this.windowGrid.w < this.screenGrid.w - this.windowGrid.x then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Touching Right Edge :|")
     end
 end
 
-function rightQuarter()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[50,50,100,100]'
+module.bottomUp = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y, this.windowGrid.w, this.windowGrid.h - 1)
+    if this.windowGrid.h > 1 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Small Enough :)")
     end
 end
 
-function topQuarter()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[50,0,100,50]'
+module.bottomDown = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y, this.windowGrid.w, this.windowGrid.h + 1)
+    if this.windowGrid.h < this.screenGrid.h - this.windowGrid.y then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Touching Bottom Edge :|")
     end
 end
 
-function bottomQuarter()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[0,50,50,100]'
+module.leftToLeft = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x - 1, this.windowGrid.y, this.windowGrid.w + 1, this.windowGrid.h)
+    if this.windowGrid.x > 0 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Touching Left Edge :|")
     end
 end
 
-----------------------------------------------------------------
--- 全屏,不会单独占据一个窗口
-function fullscreenNotResize()
-    if window.focusedWindow() then
-        window.focusedWindow():moveToUnit '[0,0,100,100]'
+module.leftToRight = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x + 1, this.windowGrid.y, this.windowGrid.w - 1, this.windowGrid.h)
+    if this.windowGrid.w > 1 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Small Enough :)")
     end
 end
 
--- 全屏,会单独占据一个窗口
-function fullscreenWillResize()
-    if window.focusedWindow() then
-        window.focusedWindow():toggleFullScreen()
+module.topUp = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y - 1, this.windowGrid.w, this.windowGrid.h + 1)
+    if this.windowGrid.y > 0 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Touching Top Edge :|")
     end
 end
 
-----------------------------------------------------------------
--- 居中,不会改变大小
-function centerNoResize()
-    if window.focusedWindow() then
-        window.focusedWindow():centerOnScreen()
+module.topDown = function ()
+    local this = windowMeta.new()
+    local cell = Cell(this.windowGrid.x, this.windowGrid.y + 1, this.windowGrid.w, this.windowGrid.h - 1)
+    if this.windowGrid.h > 1 then
+        grid.set(this.window, cell, this.screen)
     else
-        alert.show("No active window")
+        hs.alert.show("Small Enough :)")
     end
 end
 
--- 居中,大小会设置为默认值
-function centerWillRisize()
-    if window.focusedWindow() then
-        window.focusedWindow():centerOnScreen()
-        window.focusedWindow():moveToUnit '[25,25,75,75]'
-    else
-        alert.show("No active window")
-    end
-end
-
-----------------------------------------------------------------
---三分之一
-function get_vertical_third()
-    local frame = win:frame()
-    local screenframe = win:screen():frame()
-    local relframe = hs.geometry(frame.x - screenframe.x, frame.y - screenframe.y, frame.w, frame.h)
-    local third = math.floor(3.01 * relframe.y / screenframe.h)
-    return third
-end
-
-function get_horizontal_third()
-    local frame = win:frame()
-    local screenframe = win:screen():frame()
-    local relframe = hs.geometry(frame.x - screenframe.x, frame.y - screenframe.y, frame.w, frame.h)
-    local third = math.floor(3.01 * relframe.x / screenframe.w)
-    return third
-end
-
-function verticalThird()
-    local third = get_vertical_third()
-    local newrect
-    if third == 0 then
-        newrect = { 0, 1 / 3, 1, 1 / 3 }
-    elseif third == 1 then
-        newrect = { 0, 2 / 3, 1, 1 / 3 }
-    elseif third == 2 then
-        newrect = { 0, 0, 1, 1 / 3 }
-    end
-    window.focusedWindow():move(newrect)
-end
-
-function horizontalThird()
-    local third = get_horizontal_third()
-    local newrect
-    if third == 0 then
-        newrect = { 1 / 3, 0, 1 / 3, 1 }
-    elseif third == 1 then
-        newrect = { 2 / 3, 0, 1 / 3, 1 }
-    elseif third == 2 then
-        newrect = { 0, 0, 1 / 3, 1 }
-    end
-    window.focusedWindow():move(newrect)
-end
+return module

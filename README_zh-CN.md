@@ -50,4 +50,3 @@
 - https://github.com/S1ngS1ng/HammerSpoon
 - https://github.com/agzam/spacehammer
 - https://github.com/Hammerspoon/hammerspoon
-- https://github.com/sugood/hammerspoon

@@ -21,10 +21,6 @@ end)
 ----------------------------------------------------------------
 -- move cursor to other monitor
 -- 移动鼠标到其他屏幕
-hotkey.bind(hyper, "/", function()
-    focusScreen(window.focusedWindow():screen():previous())
-end)
-
 --Predicate that checks if a window belongs to a screen
 function isInScreen(screen, win)
     return win:screen() == screen
