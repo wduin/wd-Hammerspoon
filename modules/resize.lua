@@ -14,7 +14,7 @@ function fullscreenWillResize()
     end
 end
 -- 居中,大小会设置为默认值
-function centerWillRisize()
+function centerQuarter()
     if window.focusedWindow() then
         window.focusedWindow():centerOnScreen()
         window.focusedWindow():moveToUnit '[25,25,75,75]'
@@ -27,7 +27,7 @@ end
 function centerHalf()
     if window.focusedWindow() then
         window.focusedWindow():centerOnScreen()
-        window.focusedWindow():moveToUnit '[0,25,100,75]'
+        window.focusedWindow():moveToUnit '[15,15,85,85]'
     else
         alert.show("No active window")
     end

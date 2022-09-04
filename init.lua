@@ -36,9 +36,10 @@ require "modules/input"
 ----全屏,单独一个窗口
 hotkey.bind(hyperShift, 'F', fullscreenWillResize)
 --居中四分之一
-hotkey.bind(hyper, 'V', centerWillRisize)
+hotkey.bind(hyper, 'V', centerQuarter)
 ----居中二分之一
 hotkey.bind(hyper, 'B', centerHalf)
+
 --音量控制
 hs.hotkey.bind(hyper, '[', changeVolume(-3))
 hs.hotkey.bind(hyper, ']', changeVolume(3))
