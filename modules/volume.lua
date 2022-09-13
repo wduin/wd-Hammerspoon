@@ -1,7 +1,6 @@
 --调整音量
 function changeVolume(diff)
     return function()
-        alert.show("No active window")
         local current = hs.audiodevice.defaultOutputDevice():volume()
         local new = math.min(100, math.max(0, math.floor(current + diff)))
         if new > 0 then

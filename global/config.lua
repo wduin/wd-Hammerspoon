@@ -25,6 +25,10 @@ defaultConfig = {
         name = '音量控制',
         enable = true
     }, {
+        module = 'modules.brightness',
+        name = '亮度控制',
+        enable = true
+    }, {
         module = 'modules.dontSleep',
         name = '不睡眠',
         enable = true

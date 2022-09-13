@@ -57,6 +57,14 @@ volumes = {
     volumeDown = { prefix = hyper, key = "[", message = "音量减" },
 }
 
+brightness = {
+    brightnessUp = { prefix = hyper, key = "'", message = "亮度:增加" },
+    brightnessDown = { prefix = hyper, key = ";", message = "亮度:减少" },
+
+    brightnessUp_allScreen = { prefix = hyperShift, key = "'", message = "亮度:增加" },
+    brightnessDown_allScreen = { prefix = hyperShift, key = ";", message = "亮度:减少" },
+}
+
 -- 应用切换快捷键配置
 -- bundleID 可以通过 karabiner-EventViewer 来查看
 applications = {
