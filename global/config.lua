@@ -24,8 +24,11 @@ defaultConfig = {
         module = 'modules.volume',
         name = '音量控制',
         enable = true
-    }
-, {
+    }, {
+        module = 'modules.dontSleep',
+        name = '不睡眠',
+        enable = true
+    }, {
         module = 'modules.hotkey',
         name = '快捷键列表查看',
         enable = true

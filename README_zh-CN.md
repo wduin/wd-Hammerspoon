@@ -47,7 +47,7 @@
 
 ### 参考文档
 
-- https://github.com/wangshub/hammerspoon-config
-- https://github.com/S1ngS1ng/HammerSpoon
-- https://github.com/agzam/spacehammer
-- https://github.com/Hammerspoon/hammerspoon
+- https://github.com/KURANADO2/hammerspoon-kuranado
+- 官方文档：
+  - https://github.com/Hammerspoon/hammerspoon
+  - https://github.com/Hammerspoon/hammerspoon/wiki/Sample-Configurations
