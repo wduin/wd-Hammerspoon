@@ -55,6 +55,9 @@ windows = {
 volumes = {
     volumeUp = { prefix = hyper, key = "]", message = "音量加" },
     volumeDown = { prefix = hyper, key = "[", message = "音量减" },
+
+    volumeNotMute = { prefix = hyperShift, key = "]", message = "取消静音" },
+    volumeMute = { prefix = hyperShift, key = "[", message = "静音" },
 }
 
 brightness = {

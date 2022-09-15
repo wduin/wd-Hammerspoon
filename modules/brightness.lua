@@ -19,8 +19,7 @@ function controlBrightness_AllScreen(diff)
         local screens = hs.screen.allScreens()
 
         local size = #screens;
-        local current = hs.screen.primaryScreen():getBrightness()
-        local new = math.min(1, math.max(0, current + diff))
+
 
         --for i, screen in ipairs(screens) do
         --        hs.alert.closeAll(0.0)
@@ -34,13 +33,16 @@ function controlBrightness_AllScreen(diff)
 
 
         for index = 1, size do
-
             hs.alert.closeAll(0.0)
-            hs.alert.show("Brightness " .. new )
-            local screen = screens[index]
+            --local screen = screens[index]
+            --local isSuccess = screen.setPrimary()
+            --local current = hs.screen.primaryScreen():getBrightness()
+            --local new = math.min(1, math.max(0, current + diff))
+            --hs.alert.show("Brightness " .. new )
+
             --alert.show("screen "..screen)
             --
-            screen:setBrightness(new)
+            --screen:setBrightness(new)
         end
     end
 end
