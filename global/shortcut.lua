@@ -72,7 +72,8 @@ brightness = {
 -- bundleID 可以通过 karabiner-EventViewer 来查看
 applications = {
     { prefix = Option, key = "`", message = "Chrome", bundleId = "com.google.Chrome" },
-    { prefix = Option, key = "1", message = "Typora", bundleId = "abnerworks.Typora" },
+    { prefix = Option, key = "1", message = "Osidian", bundleId = "md.obsidian" },
+    { prefix = OptionShift, key = "1", message = "Typora", bundleId = "abnerworks.Typora" },
     { prefix = Option, key = "2", message = "Android Studio", bundleId = "com.google.android.studio" },
     { prefix = Option, key = "3", message = "iTerm2", bundleId = "com.googlecode.iterm2" },
     { prefix = Option, key = "4", message = "Sublime", bundleId = "com.sublimetext.4" },
